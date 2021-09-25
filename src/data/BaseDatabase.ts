@@ -26,13 +26,30 @@ export abstract class BaseDatabase {
 
     public createTables(){
         BaseDatabase.connection?.raw(`
-        CREATE TABLE lama_user(
+        CREATE TABLE IF NOT EXISTS lama_user(
             id VARCHAR(255) PRIMARY KEY,
             email VARCHAR(255) UNIQUE NOT NULL,
             name VARCHAR(255) NOT NULL,
             password VARCHAR(255) NOT NULL,
-            role ENUM("NORMAL", "ADMIN") NOT NULL
+            role ENUM("NORMAL", "ADMIN") NOT NULL DEFAULT "NORMAL"
         );
+
+        CREATE TABLE lama_band(
+            id VARCHAR(255) PRIMARY KEY,
+            name VARCHAR(255) UNIQUE NOT NULL,
+            musical_genre VARCHAR(255) NOT NULL,
+            resposible VARCHAR(255) UNIQUE NOT NULL
+        );
+        
+        CREATE TABLE lama_shows(
+            id VARCHAR(255) PRIMARY KEY,
+            week_day VARCHAR(255) NOT NULL,
+            start_time INT NOT NULL,
+            end_time INT NOT NULL,
+            band_id VARCHAR(255) NOT NULL,
+            FOREIGN KEY (band_id) REFERENCES lama_band(id)
+        );
+        
         `)
     }
 

@@ -1,7 +1,8 @@
 import { BaseDatabase } from "./BaseDatabase";
 import { User } from "../model/User";
+import { UserRepository } from "../business/UserRepository";
 
-export class UserDatabase extends BaseDatabase {
+export class UserDatabase extends BaseDatabase implements UserRepository {
 
   private static TABLE_NAME = "lama_user";
 

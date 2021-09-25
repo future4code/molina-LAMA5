@@ -2,8 +2,20 @@ import { Request, Response } from "express";
 import { UserInputDTO, LoginInputDTO} from "../model/User";
 import { UserBusiness } from "../business/UserBusiness";
 import { BaseDatabase } from "../data/BaseDatabase";
+import { UserDatabase } from "../data/UserDatabase";
+import { IdGenerator } from "../services/IdGenerator";
+import { HashManager } from "../services/HashManager";
 
 export class UserController {
+    private userBusiness: UserBusiness
+
+    constructor(){
+        this.userBusiness = new UserBusiness(
+            new UserDatabase(),
+            new IdGenerator(),
+            new HashManager()
+            )
+    }
     async signup(req: Request, res: Response) {
         try {
 
@@ -14,8 +26,7 @@ export class UserController {
                 role: req.body.role
             }
 
-            const userBusiness = new UserBusiness();
-            const token = await userBusiness.createUser(input);
+            const token = await this.userBusiness.createUser(input);
 
             res.status(200).send({ token });
 
@@ -35,8 +46,7 @@ export class UserController {
                 password: req.body.password
             };
 
-            const userBusiness = new UserBusiness();
-            const token = await userBusiness.getUserByEmail(loginData);
+            const token = await this.userBusiness.getUserByEmail(loginData);
 
             res.status(200).send({ token });
 
