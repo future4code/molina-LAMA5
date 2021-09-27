@@ -21,7 +21,7 @@ export class BandController {
                 new Authenticator
             )
     
-            await bandBusiness.registerBand(input, req.headers.token as string)
+            await bandBusiness.registerBand(input, req.headers.authorization as string)
 
             res.sendStatus(200)
         }catch(error: any){

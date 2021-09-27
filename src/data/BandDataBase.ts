@@ -6,6 +6,8 @@ export class BandDataBase extends BaseDatabase{
 
     public async createBand(band: Band): Promise<void> {
         try{
+
+            console.log(band)
             await this.getConnection()
             .insert({
                 id: band.getId(),
