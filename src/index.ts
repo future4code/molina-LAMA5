@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 
 app.use("/user", userRouter);
-app.use("band", bandRouter)
+app.use("/band", bandRouter)
 
 const server = app.listen(3000, () => {
     if (server) {

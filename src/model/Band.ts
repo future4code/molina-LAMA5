@@ -39,7 +39,7 @@ export class Band {
             data.id,
             data.name,
             data.mainGenre || data.main_genre || data.musicalGenre || data.musical_genre,
-            data.resposible
+            data.responsible
         ))
     }
 }
