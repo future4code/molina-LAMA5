@@ -3,7 +3,7 @@ import { ShowDataBase } from "../data/ShowDataBase";
 import { InvalidInputError } from "../error/InvalidInputError";
 import { NotFoundError } from "../error/NotFoundError";
 import { UnauthorizedError } from "../error/UnauthorizedError";
-import { Show, ShowInputDTO } from "../model/Show";
+import { Show, ShowInputDTO, WeekDay } from "../model/Show";
 import { UserRole } from "../model/User";
 import { Authenticator } from "../services/Authenticator";
 import { IdGenerator } from "../services/IdGenerator";
@@ -53,5 +53,15 @@ export class ShowBusiness{
                 id: this.idGenerator.generate()
             })
         )
+    }
+
+    async getShowByWeekDay(weekDay: WeekDay){
+        if(!weekDay){
+            throw new InvalidInputError("Input inválido para pegar usuário pelo Id")
+        }
+
+        const shows = await this.showDataBase.getShowsByWeekDayOrFail(weekDay)
+        
+        return {result: shows}
     }
 }

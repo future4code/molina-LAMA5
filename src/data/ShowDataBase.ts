@@ -1,3 +1,4 @@
+import { NotFoundError } from "../error/NotFoundError";
 import { Show, ShowOutPutDTO, WeekDay } from "../model/Show";
 import { BaseDatabase } from "./BaseDatabase";
 
@@ -42,5 +43,34 @@ export class ShowDataBase extends BaseDatabase{
                 weekDay: show.weekDay
             }
         })
+    }
+
+    public async getShowsByWeekDayOrFail(weekDay: WeekDay): Promise<ShowOutPutDTO>{
+        const shows = await this.getConnection().raw(`
+            SELECT s.id as id,
+                b.id as bandId,
+                s.start_time as startTime,
+                s.end_time as endTime,
+                s.week_day as weekDay,
+                b.musical_genre as musicGenre
+            FROM ${this.tableNames.shows} s
+            LEFT JOIN ${this.tableNames.bands} b
+            ON b.id = s.band_id
+            WHERE s.week_day = "${weekDay}"
+            ORDER BY start_time ASC
+        `)
+
+        if(!shows.length){
+            throw new NotFoundError(`não foi encontrado show para ${weekDay}`)
+        }
+
+        return shows[0].map((data: any) => ({
+            id: data.id,
+            bandId: data.bandId,
+            startTime: data.startTime,
+            endTime: data.endTime,
+            weekDay: data.weekDay,
+            mainGenre: data.mainGenre
+        }))
     }
 }
