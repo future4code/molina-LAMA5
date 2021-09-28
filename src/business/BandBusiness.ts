@@ -31,4 +31,12 @@ export class BandBusiness {
             })!
         )
     }
+
+    async getBandDetailsByIdOrName(input: string): Promise<Band>{
+        if(!input){
+            throw new InvalidInputError("Input inválido")
+        }
+
+        return this.bandDataBase.getBandIdOrNameOrFail(input)
+    }
 }
