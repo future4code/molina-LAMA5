@@ -36,4 +36,26 @@ export class ShowController {
             await BaseDatabase.destroyConnection()
         }
     }
+
+    async getShowsByWeekDay(req: Request, res: Response){
+        try{
+            const weekDay = Show.toWeekDayEnum(req.query.weekDay as string)
+
+            const showBusiness = new ShowBusiness(
+                new ShowDataBase,
+                new BandDataBase,
+                new IdGenerator,
+                new Authenticator
+            )
+
+            const shows = await showBusiness.getShowByWeekDay(weekDay)
+
+            res.status(200).send(shows)
+
+        }catch(error: any){
+            res.status(error.customErrorCode || 400).send(error.message)
+        }finally{
+            await BaseDatabase.destroyConnection()
+        }
+    }
 }

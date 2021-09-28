@@ -95,5 +95,7 @@ export interface ShowOutPutDTO{
     bandId: string,
     weekDay: WeekDay,
     startTIme: number,
-    endTime: number
+    endTime: number,
+    mainGenre?: string,
+    bandName?: string
 }
