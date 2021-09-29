@@ -50,7 +50,7 @@ const userBusiness = new UserBusiness(
 )
 
 describe("Signup Test", () => {
-    test("Deve retornar error se formato de email estiver errado", async() => {
+    test.skip("Deve retornar error se formato de email estiver errado", async() => {
         expect.assertions(2)
 
         const user = {
@@ -62,8 +62,109 @@ describe("Signup Test", () => {
 
         try{
             await userBusiness.createUser(user)
-        }catch(error: any){
+        }catch(error){
             expect(error.message).toBe("Formato de e-mail inválido")
+            expect(error.code).toBe(417)
+        }
+    })
+
+    test.skip("Deve retornar error quando estiver formato errado do role", async() => {
+        expect.assertions(1)
+
+        const user = {
+            email: "email@teste.com",
+            name: "Labenu",
+            password: "123123",
+            role: "qualquer"
+        } as UserInputDTO
+
+        try{
+            await userBusiness.createUser(user)
+        }catch (error) {
+            expect(error.message).toBe("role deve ser 'ADMIN' ou 'NORMAL'")
+        }
+    })
+    test.skip("Deve retornar error quando password estiver menor que 6 digitos", async() => {
+        expect.assertions(2)
+
+        const user = {
+            email: "email@teste.com",
+            name: "Labenu",
+            password: "12312",
+            role: "ADMIN"
+        } as UserInputDTO
+
+        try{
+            await userBusiness.createUser(user)
+        }catch (error) {
+            expect(error.message).toBe("A senha deve ser igual ou superior a 6 digitos")
+            expect(error.code).toBe(417)
+        }
+    })
+    test.skip("Deve retornar error quando estiver sem o password", async() => {
+        expect.assertions(2)
+
+        const user = {
+            email: "email@teste.com",
+            name: "Labenu",
+            role: "ADMIN"
+        } as UserInputDTO
+
+        try{
+            await userBusiness.createUser(user)
+        }catch (error) {
+            expect(error.message).toBe("Todos os campos devem ser preenchidos")
+            expect(error.code).toBe(417)
+        }
+    })
+    test("Deve retornar error quando email estiver vazio", async() => {
+        expect.assertions(2)
+
+        const user = {
+            email: "",
+            name: "Labenu",
+            password: "12312",
+            role: "ADMIN"
+        } as UserInputDTO
+
+        try{
+            await userBusiness.createUser(user)
+        }catch (error) {
+            expect(error.message).toBe("Todos os campos devem ser preenchidos")
+            expect(error.code).toBe(417)
+        }
+    })
+    test("Deve retornar error quando nome estiver vazio", async() => {
+        expect.assertions(2)
+
+        const user = {
+            email: "email@teste.com",
+            name: "",
+            password: "12312",
+            role: "ADMIN"
+        } as UserInputDTO
+
+        try{
+            await userBusiness.createUser(user)
+        }catch (error) {
+            expect(error.message).toBe("Todos os campos devem ser preenchidos")
+            expect(error.code).toBe(417)
+        }
+    })
+    test("Deve retornar error quando role estiver vazio", async() => {
+        expect.assertions(2)
+
+        const user = {
+            email: "email@teste.com",
+            name: "Labenu",
+            password: "12312",
+            role: ""
+        } as UserInputDTO
+
+        try{
+            await userBusiness.createUser(user)
+        }catch (error) {
+            expect(error.message).toBe("Todos os campos devem ser preenchidos")
             expect(error.code).toBe(417)
         }
     })

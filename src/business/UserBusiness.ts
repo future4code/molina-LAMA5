@@ -1,4 +1,4 @@
-import { UserInputDTO, LoginInputDTO } from "../model/User";
+import { UserInputDTO, LoginInputDTO, UserRole } from "../model/User";
 import { UserDatabase } from "../data/UserDatabase";
 import { IdGenerator } from "../services/IdGenerator";
 import { HashManager } from "../services/HashManager";
@@ -16,9 +16,20 @@ export class UserBusiness {
     ){
     }
     async createUser(user: UserInputDTO) {
+        if(!user.email || !user.name || !user.password || !user.role){
+            throw new InvalidInputError("Todos os campos devem ser preenchidos")
+        }
+
+        if(user.role !== UserRole.ADMIN && user.role !== UserRole.NORMAL){
+            throw new InvalidInputError("role deve ser 'ADMIN' ou 'NORMAL'")
+        }
 
         if(!user.email.includes("@")){
             throw new InvalidInputError("Formato de e-mail inválido")
+        }
+
+        if(user.password.length < 6){
+            throw new InvalidInputError("A senha deve ser igual ou superior a 6 digitos")
         }
 
         const id = this.idGenerator.generate();
