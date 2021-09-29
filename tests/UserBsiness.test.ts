@@ -50,7 +50,7 @@ const userBusiness = new UserBusiness(
 )
 
 describe("Signup Test", () => {
-    test.skip("Deve retornar error se formato de email estiver errado", async() => {
+    test("Deve retornar error se formato de email estiver errado", async() => {
         expect.assertions(2)
 
         const user = {
@@ -68,7 +68,7 @@ describe("Signup Test", () => {
         }
     })
 
-    test.skip("Deve retornar error quando estiver formato errado do role", async() => {
+    test("Deve retornar error quando estiver formato errado do role", async() => {
         expect.assertions(1)
 
         const user = {
@@ -84,7 +84,7 @@ describe("Signup Test", () => {
             expect(error.message).toBe("role deve ser 'ADMIN' ou 'NORMAL'")
         }
     })
-    test.skip("Deve retornar error quando password estiver menor que 6 digitos", async() => {
+    test("Deve retornar error quando password estiver menor que 6 digitos", async() => {
         expect.assertions(2)
 
         const user = {
@@ -101,7 +101,7 @@ describe("Signup Test", () => {
             expect(error.code).toBe(417)
         }
     })
-    test.skip("Deve retornar error quando estiver sem o password", async() => {
+    test("Deve retornar error quando estiver sem o password", async() => {
         expect.assertions(2)
 
         const user = {
@@ -167,5 +167,19 @@ describe("Signup Test", () => {
             expect(error.message).toBe("Todos os campos devem ser preenchidos")
             expect(error.code).toBe(417)
         }
+    })
+    test("Deve retornar o token", async() => {
+        expect.assertions(1)
+
+        const user = {
+            email: "email@teste.com",
+            name: "Labenu",
+            password: "123126",
+            role: "ADMIN"
+        } as UserInputDTO
+
+        const result = await userBusiness.createUser(user)
+
+        expect(result).toBe("token_usuario")
     })
 })
