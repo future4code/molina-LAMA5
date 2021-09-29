@@ -1,6 +1,6 @@
 import { UserBusiness } from "../src/business/UserBusiness";
 import { NotFoundError } from "../src/error/NotFoundError";
-import { User, UserInputDTO, UserRole } from "../src/model/User";
+import { LoginInputDTO, User, UserInputDTO, UserRole } from "../src/model/User";
 
 const userDataBase = {
     createUser: jest.fn(async (user: User) => {}),
@@ -49,7 +49,7 @@ const userBusiness = new UserBusiness(
     authenticator as any
 )
 
-describe("Signup Test", () => {
+describe.skip("Signup Test", () => {
     test("Deve retornar error se formato de email estiver errado", async() => {
         expect.assertions(2)
 
@@ -181,5 +181,68 @@ describe("Signup Test", () => {
         const result = await userBusiness.createUser(user)
 
         expect(result).toBe("token_usuario")
+    })
+})
+
+describe("SignIn Teste", () => {
+    test("Deve retornar error quando usuario não estiver vinculado ao e-mail", async()=>{
+        expect.assertions(1)
+
+        const login = {
+            email: "email@teste.com",
+            password: "123123",
+        } as LoginInputDTO
+
+        try{
+            await userBusiness.getUserByEmail(login)
+        }catch(error){
+            expect(error.message).toBe(`Não encontrado usuario com email ${login.email}`)
+        }
+    })
+
+    test("Deve retornar error quando usuario estiver errada", async()=>{
+        expect.assertions(1)
+
+        const login = {
+            email: "teste@email.com",
+            password: "123456",
+        } as LoginInputDTO
+
+        try{
+            await userBusiness.getUserByEmail(login)
+        }catch(error){
+            expect(error.message).toBe(`Invalid Password!`)
+        }
+    })
+    test("Deve retornar error quando o e-mail estiver vazio", async()=>{
+        expect.assertions(2)
+
+        const login = {
+            email: "",
+            password: "123456",
+        } as LoginInputDTO
+
+        try{
+            await userBusiness.getUserByEmail(login)
+        }catch(error){
+            expect(error.message).toBe(`Todos os campos devem ser preenchidos`)
+            expect(error.code).toBe(417)
+        }
+    })
+
+    test("Deve retornar error quando a senha estiver vazia", async()=>{
+        expect.assertions(2)
+
+        const login = {
+            email: "teste@email.com",
+            password: "",
+        } as LoginInputDTO
+
+        try{
+            await userBusiness.getUserByEmail(login)
+        }catch(error){
+            expect(error.message).toBe(`Todos os campos devem ser preenchidos`)
+            expect(error.code).toBe(417)
+        }
     })
 })

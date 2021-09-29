@@ -45,7 +45,19 @@ export class UserBusiness {
 
     async getUserByEmail(user: LoginInputDTO) {
 
+        if(!user.email || !user.password){
+            throw new InvalidInputError("Todos os campos devem ser preenchidos")
+        }
+
+        if(!user.email.includes("@")){
+            throw new InvalidInputError("Formato de e-mail inválido")
+        }
+
         const userFromDB = await this.userDatabase.getUserByEmail(user.email);
+
+        if(!userFromDB){
+            throw new Error(`Usuário não encontrado com o email ${user.email}`)
+        }
 
         const hashCompare = await this.hashManager.compare(user.password, userFromDB.getPassword());
 
