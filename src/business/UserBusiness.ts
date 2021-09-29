@@ -4,16 +4,22 @@ import { IdGenerator } from "../services/IdGenerator";
 import { HashManager } from "../services/HashManager";
 import { Authenticator } from "../services/Authenticator";
 import { UserRepository } from "./UserRepository";
+import { InvalidInputError } from "../error/InvalidInputError";
 
 export class UserBusiness {
 
     constructor(
         private userDatabase: UserRepository,
         private idGenerator: IdGenerator,
-        private hashManager: HashManager
+        private hashManager: HashManager,
+        private authenticator: Authenticator
     ){
     }
     async createUser(user: UserInputDTO) {
+
+        if(!user.email.includes("@")){
+            throw new InvalidInputError("Formato de e-mail inválido")
+        }
 
         const id = this.idGenerator.generate();
 
@@ -21,8 +27,7 @@ export class UserBusiness {
 
         await this.userDatabase.createUser(id, user.email, user.name, hashPassword, user.role);
 
-        const authenticator = new Authenticator();
-        const accessToken = authenticator.generateToken({ id, role: user.role });
+        const accessToken = this.authenticator.generateToken({ id, role: user.role });
 
         return accessToken;
     }
@@ -33,8 +38,7 @@ export class UserBusiness {
 
         const hashCompare = await this.hashManager.compare(user.password, userFromDB.getPassword());
 
-        const authenticator = new Authenticator();
-        const accessToken = authenticator.generateToken({ id: userFromDB.getId(), role: userFromDB.getRole() });
+        const accessToken = this.authenticator.generateToken({ id: userFromDB.getId(), role: userFromDB.getRole() });
 
         if (!hashCompare) {
             throw new Error("Invalid Password!");
