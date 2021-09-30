@@ -5,6 +5,7 @@ import { BaseDatabase } from "../data/BaseDatabase";
 import { UserDatabase } from "../data/UserDatabase";
 import { IdGenerator } from "../services/IdGenerator";
 import { HashManager } from "../services/HashManager";
+import { Authenticator } from "../services/Authenticator";
 
 export class UserController {
     private userBusiness: UserBusiness
@@ -13,7 +14,8 @@ export class UserController {
         this.userBusiness = new UserBusiness(
             new UserDatabase(),
             new IdGenerator(),
-            new HashManager()
+            new HashManager(),
+            new Authenticator()
             )
     }
     async signup(req: Request, res: Response) {
